@@ -10,9 +10,14 @@
 
 ADS1015 lsSensor; //sensor for left two fingers, Finger 2 Pinkie, Finger 1 Index
 ADS1015 rsSensor; //sensor for right two fingers. Finger 2 Middle, Finger 1 Pointer
-ADS1015 tSensor; //sensor fo thumb. Finger 1 Thumb 
+ADS1015 tSensor; //sensor fo thumb. Finger 1 Thumb
+ 
 ADS1015 Sensors[] = {lsSensor, rsSensor, tSensor};
 int nOfs = 3; //number of sensors
+
+int frequency = 100; //rate at which data packets are sent in ms
+String output = "";
+uint16_t fingerData[5] = {0, 0, 0, 0, 0};
 
 void setup() {
 
@@ -50,8 +55,22 @@ void setup() {
 }//end of set up
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  
+  for(int i = 0; i<2; i++){
+    fingerData[i] = Sensors[0].getScaledAnalogData(i)*100; //convers 0-1 scale to 0-100
+    fingerData[i+2] = Sensors[1].getScaledAnalogData(i)*100; //convers 0-1 scale to 0-100
+  }//end of for two finger modules
+  fingerData[4] = Sensors[2].getScaledAnalogData(0)*100;
+
+  for(int i = 0; i<4; i++){
+    output += fingerData[i];
+    output += ":";
+  }
+  output += fingerData[4];
+  output += "_";
+
+  Serial.print(output);
+  output = "";
+  delay(frequency);
 }
 
 void calibrateSensors(){
