@@ -15,14 +15,13 @@ ADS1015 tSensor; //sensor fo thumb. Finger 1 Thumb
 ADS1015 Sensors[] = {lsSensor, rsSensor, tSensor};
 int nOfs = 3; //number of sensors
 
-int frequency = 100; //rate at which data packets are sent in ms
 String output = "";
 uint16_t fingerData[5] = {0, 0, 0, 0, 0};
 
 void setup() {
 
   Wire.begin();
-  Serial.begin(115200); //when changed for bluetooth set at 38400
+  Serial.begin(38400); //when changed for bluetooth set at 38400
   
   if(Sensors[0].begin(Wire, 100000, ADS1015_ADDRESS_GND) == false){
     Serial.print("!"); //notifies cp error with module
@@ -49,12 +48,19 @@ void setup() {
   }//end of else module is working
 
   calibrateSensors();
-  //checkCalibration();
+  checkCalibration();
   
   Serial.print("#"); //notifies cp calibration is complete and program is ready for transmition
 }//end of set up
 
 void loop() {
+ uint8_t incoming = 0; // variable for data coming through serial  
+  do{
+      if(Serial.available()){
+        incoming = Serial.read();
+      }
+  }while(incoming != '#');
+  
   for(int i = 0; i<2; i++){
     fingerData[i] = Sensors[0].getScaledAnalogData(i)*100; //convers 0-1 scale to 0-100
     fingerData[i+2] = Sensors[1].getScaledAnalogData(i)*100; //convers 0-1 scale to 0-100
@@ -63,15 +69,14 @@ void loop() {
 
   for(int i = 0; i<4; i++){
     output += fingerData[i];
-    output += ":";
+    output += "_";
   }
   output += fingerData[4];
-  output += "_";
-
+  output += ":";
+  
   Serial.print(output);
   output = "";
-  delay(frequency);
-}
+}//end of main body loop
 
 void calibrateSensors(){
   uint8_t incoming = 0; // variable for data coming through serial
