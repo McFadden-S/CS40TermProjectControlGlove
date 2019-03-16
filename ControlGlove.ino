@@ -7,6 +7,7 @@
 
 #include <SparkFun_ADS1015_Arduino_Library.h>
 #include <Wire.h>
+#include <SoftwareSerial.h>
 
 ADS1015 lsSensor; //sensor for left two fingers, Finger 2 Pinkie, Finger 1 Index
 ADS1015 rsSensor; //sensor for right two fingers. Finger 2 Middle, Finger 1 Pointer
@@ -21,8 +22,8 @@ uint16_t fingerData[5] = {0, 0, 0, 0, 0};
 void setup() {
 
   Wire.begin();
-  Serial.begin(38400); //when changed for bluetooth set at 38400
-  
+  Serial.begin(9600);
+
   if(Sensors[0].begin(Wire, 100000, ADS1015_ADDRESS_GND) == false){
     Serial.print("!"); //notifies cp error with module
     while(1); //loop to stop program
@@ -48,9 +49,8 @@ void setup() {
   }//end of else module is working
 
   calibrateSensors();
-  checkCalibration();
+  //checkCalibration();
   
-  Serial.print("#"); //notifies cp calibration is complete and program is ready for transmition
 }//end of set up
 
 void loop() {
