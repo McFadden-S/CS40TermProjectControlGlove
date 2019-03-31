@@ -32,7 +32,7 @@ void setup() {
     Serial.print("#"); //notifies cp know this module is responding
   }//end of else module is working
   
-  if(Sensors[1].begin(Wire, 100000, ADS1015_ADDRESS_SDA) == false){
+  if(Sensors[1].begin(Wire, 100000, ADS1015_ADDRESS_SCL) == false){
     Serial.print("!"); //notifies cp error with module
     while(1); //loop to stop program
   }//end of rsSensor start up
@@ -40,7 +40,7 @@ void setup() {
     Serial.print("#"); //notifies cp know this module is responding
   }//end of else module is working
 
-  if(Sensors[2].begin(Wire, 100000, ADS1015_ADDRESS_SCL) == false){
+  if(Sensors[2].begin(Wire, 100000, ADS1015_ADDRESS_SDA) == false){
     Serial.print("!"); //notifies cp error with module
     while(1); //loop to stop program
   }//end of tSensor start up
